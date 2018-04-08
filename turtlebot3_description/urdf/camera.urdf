@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<robot>
+  <link name="camera_link">  
+    <visual>  
+       <origin xyz="0 0 0" rpy="${camera_roll} ${camera_pitch} ${camera_yaw}" /> 
+       <material name="black">
+         <color rgba="1.0 1.0 1.0 1.0"/>
+       </material>
+       <geometry>  
+         <mesh filename="file://$(find turtlebot3_description)/meshes/sensors/astra.dae" scale="0.6 0.6 0.6"/>
+       </geometry>  
+    </visual>  
+  
+    <collision>  
+       <origin xyz="0 0 0" rpy="${camera_roll} ${camera_pitch} ${camera_yaw}" />  
+       <geometry>  
+         <box size="${camera_x_size} ${camera_y_size} ${camera_z_size}"/>
+       </geometry>  
+    </collision>  
+  
+    <inertial>  
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" />  
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>  
+    </inertial>  
+  </link>  
+
+  <joint name="camera_base_joint" type="fixed">  
+    <parent link="base_link"/>  
+    <child link="camera_link" />  
+    <origin xyz="-0.01 0 0.26" rpy="0 0 0" />  
+  </joint>
+
+
+<!-- SENSOR -->
+	<gazebo reference="camera_link">
+		<sensor type="depth" name="kinect_rgb_camera">
+			<always_on>1</always_on>
+			<update_rate>20</update_rate>
+        		<visualize>true</visualize>
+			<camera>
+				<horizontal_fov>1.047</horizontal_fov>
+				<image>
+					<width>640</width>
+					<height>480</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip>
+					<near>0.1</near>
+					<far>100</far>
+				</clip>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+				<alwaysOn>true</alwaysOn>
+        			<updateRate>10.0</updateRate>
+	       			<cameraName>camera</cameraName>
+        			<frameName>kinect_rgb_optical_frame</frameName>
+				<imageTopicName>image_raw</imageTopicName>
+				<depthImageTopicName>depth/image_raw</depthImageTopicName>
+				<pointCloudTopicName>depth/points</pointCloudTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+				<pointCloudCutoff>0.4</pointCloudCutoff>
+        			<hackBaseline>0.07</hackBaseline>
+        			<distortionK1>0.0</distortionK1>
+        			<distortionK2>0.0</distortionK2>
+        			<distortionK3>0.0</distortionK3>
+        			<distortionT1>0.0</distortionT1>
+        			<distortionT2>0.0</distortionT2>
+				<CxPrime>0.0</CxPrime>
+				<Cx>0.0</Cx>
+				<Cy>0.0</Cy>
+				<focalLength>0.0</focalLength>
+      			</plugin>
+		</sensor>
+	</gazebo>
+
+  
+</robot>

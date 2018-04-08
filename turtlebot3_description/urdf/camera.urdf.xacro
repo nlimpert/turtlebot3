@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<robot>
+  <link name="camera_link">  
+    <visual>  
+       <origin xyz="0 0 0" rpy="${camera_roll} ${camera_pitch} ${camera_yaw}" /> 
+       <material name="black">
+         <color rgba="0.95 0.95 0.95 1.0"/>
+       </material>
+       <geometry>  
+         <mesh filename="file://$(find turtlebot3_description)/meshes/sensors/kamerica.stl" scale="0.005 0.005 0.005"/>
+       </geometry>  
+    </visual>  
+  
+    <collision>  
+       <origin xyz="0 0 0" rpy="${camera_roll} ${camera_pitch} ${camera_yaw}" />  
+       <geometry>  
+         <box size="${camera_x_size} ${camera_y_size} ${camera_z_size}"/>
+       </geometry>  
+    </collision>  
+  
+    <inertial>  
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" />  
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>  
+    </inertial>  
+  </link>  
+
+  <joint name="camera_base_joint" type="fixed">  
+    <parent link="base_link"/>  
+    <child link="camera_link" />  
+    <origin xyz="0.02 0 0.295" rpy="0 0 0" />  
+  </joint>
+
+
+
+<!-- SENSOR -->
+	<gazebo reference="camera_link">
+		<material>Gazebo/Grey</material>
+		<sensor type="camera" name="usb_camera">
+			<always_on>1</always_on>
+			<update_rate>20</update_rate>
+        		<visualize>false</visualize>
+			<camera>
+				<horizontal_fov>1.5707</horizontal_fov>
+				<image>
+					<width>640</width>
+					<height>480</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip>
+					<near>0.02</near>
+					<far>100</far>
+				</clip>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+        			<updateRate>10.0</updateRate>
+	       			<cameraName>camera</cameraName>
+        			<frameName>camera_link</frameName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<hackBaseline>0.07</hackBaseline>
+        			<distortionK1>0.0</distortionK1>
+        			<distortionK2>0.0</distortionK2>
+        			<distortionK3>0.0</distortionK3>
+        			<distortionT1>0.0</distortionT1>
+        			<distortionT2>0.0</distortionT2>
+      			</plugin>
+		</sensor>
+	</gazebo>
+
+  
+</robot>
